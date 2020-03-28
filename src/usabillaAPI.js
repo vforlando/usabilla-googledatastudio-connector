@@ -1,6 +1,6 @@
 /**
  * 
- * Wraper for Usabilla API (https://developers.usabilla.com/)
+ * Wrapper for Usabilla API (https://developers.usabilla.com/)
  * 
 */
 
