@@ -2,7 +2,7 @@
  *  This script adapts the Usabilla API responses to be used in Google Data Studio
  */
 
-function getDataFromUsabilla(request, fields) {
+const getDataFromUsabilla = function (request, fields) {
 
     const response = []
 
@@ -178,3 +178,6 @@ function mappingCustomFields(type, usabilla_item, row) {
 
 }
 
+if (typeof(exports) !== 'undefined') {
+    module.exports.lookUpField = lookUpField;
+}

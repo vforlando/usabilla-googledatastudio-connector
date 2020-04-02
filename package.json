@@ -1,0 +1,35 @@
+{
+  "name": "usabilla-googledatastudio-connector",
+  "version": "0.0.1",
+  "description": "## Intro",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^25.2.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vforlando/usabilla-googledatastudio-connector.git"
+  },
+  "keywords": [
+    "usabilla",
+    "google",
+    "data",
+    "studio",
+    "connector"
+  ],
+  "author": "vforlando",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vforlando/usabilla-googledatastudio-connector/issues"
+  },
+  "homepage": "https://github.com/vforlando/usabilla-googledatastudio-connector#readme",
+  "jest": {
+    "collectCoverageFrom": [
+      "src/*.js"
+    ]
+  }
+}
