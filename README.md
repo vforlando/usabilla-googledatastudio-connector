@@ -19,7 +19,7 @@ Please note that the connector is still an experimental project, and it has not 
 As a recommended alternative, you can create and deploy your own connector and have full control of the code that is executed:
 
 * Visit Google Apps Script (https://script.google.com/) to create a new project. 
-* Copy the files inside the src folder inside your project
+* Copy the files from the src folder inside your project
 * Deploy your connector. Inside the Google Apps Script, click on Publish -> Deploy from manifest 
 * Use the link provided to access your connector.
 
