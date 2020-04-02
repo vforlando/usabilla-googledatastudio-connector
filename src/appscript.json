@@ -1,0 +1,13 @@
+{
+    "runtimeVersion": "V8",
+    "dataStudio": {
+      "name": "Usabilla - Google Data Studio Connector (v0.1)",
+      "logoUrl": "https://ga1.imgix.net/logo/o/109797-1505739345-3104248?auto\u003dformat\u0026q\u003d50\u0026fit\u003dfill",
+      "company": "vforlando",
+      "companyUrl": "https://usabilla.com",
+      "addonUrl": "https://usabilla.com",
+      "supportUrl": "https://github.com/google/datastudio/issues",
+      "description": "Usabilla - Feedbacks.",
+      "sources": ["usabilla"]
+    }
+  }

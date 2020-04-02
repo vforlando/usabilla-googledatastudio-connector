@@ -1,13 +1,12 @@
 /**
  *  This script adapts the Usabilla API responses to be used in Google Data Studio
- *  TODO: improve 
  */
 
 function getDataFromUsabilla(request, fields) {
 
     const response = []
 
-    // Google HTTP Requests are synchronous function (no callback or promisses needed)
+    // Google Scripts HTTP Requests are synchronous function (no callback or promisses needed)
     const ub_buttons = usabillaAPI.getAllButtons(request);
     const ub_feedbacks = usabillaAPI.getAllFeedbackItems(request);
 
@@ -48,9 +47,9 @@ function getCampaignById(id, cp) {
 
 function apiReponseToUniqueFeedback(type, response, buttons, campaigns) {
     const rows = []
-    for (var i = 0; i < response.length; i++) {
+    for (let i = 0; i < response.length; i++) {
         const usabilla_item = response[i];
-        const row = mappingFields(type, usabilla_item, buttons, campaigns)
+        let row = mappingFields(type, usabilla_item, buttons, campaigns)
         row = mappingCustomFields(type, usabilla_item, row)
         rows.push(row)
     }
@@ -73,6 +72,10 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
             continue;
         }
 
+        // Custom data is handled later
+        if (api_field.indexOf('o_') !== -1)
+            continue;
+
         // Date field
         if (api_field === 'date') {
             if (fieldUniqueFormat.value_type === 'TEXT')
@@ -82,9 +85,21 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
             continue;
         }
 
-        // If it is a usabilla object it will be handled later
-        if (api_field.indexOf('o_') !== -1)
+        // NPS and mood score are inside an object on Campaigns
+        if ((api_field.indexOf('e_') !== -1) && (type === 'cp')) {
+            const kpi = api_field.replace('e_', '')
+
+            if (kpi === 'nps' && usabilla_item.data !== null) {
+                row[fieldUniqueFormat.name] = usabilla_item.data['nps'] || ''
+            }
+
+            if (kpi === 'rating' && usabilla_item.data !== null) {
+                row[fieldUniqueFormat.name] = usabilla_item.data['mood'] || ''
+            }
+
             continue;
+        }
+
 
         // It is lookup field to a parent object
         if (api_field.indexOf('r_') !== -1) {
@@ -100,7 +115,7 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
 
             }
             // keys should be an array with the object path. Ex: ['cp', 'button', 'name']
-            var keys = api_field.replace('r_', '').split('.');
+            const keys = api_field.replace('r_', '').split('.');
             row[fieldUniqueFormat.name] = lookUpField(usabilla_item, keys);
             continue;
         }
@@ -110,7 +125,7 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
             continue;
         }
 
-        // If it gets here, it should be  field abailabe on the Usabilla API item 
+        // If it gets here, it should be a field available on the Usabilla API item 
         row[fieldUniqueFormat.name] = usabilla_item[api_field]
     }
 
@@ -123,7 +138,7 @@ function mappingCustomFields(type, usabilla_item, row) {
     switch (type) {
         case 'cp':
             if (typeof usabilla_item.data === 'object' && usabilla_item.data !== null) {
-                const index = 1;
+                let index = 1;
                 const keys = Object.keys(usabilla_item.data)
                 for (let i = 0; i < keys.length; i++) {
                     row['ub_question' + index] = keys[i];
@@ -132,7 +147,7 @@ function mappingCustomFields(type, usabilla_item, row) {
                 }
             }
             if (typeof usabilla_item.customData === 'object' && usabilla_item.customData !== null) {
-                const index = 1;
+                let index = 1;
                 const keys = Object.keys(usabilla_item.customData)
                 for (let i = 0; i < keys.length; i++) {
                     row['customVariableKey' + index] = keys[i];
@@ -145,7 +160,7 @@ function mappingCustomFields(type, usabilla_item, row) {
 
         case 'fb':
             if (typeof usabilla_item.custom === 'object' && usabilla_item.custom !== null) {
-                const index = 1;
+                let index = 1;
                 const keys = Object.keys(usabilla_item.custom)
                 for (let i = 0; i < keys.length; i++) {
                     row['ub_question' + index] = keys[i];
