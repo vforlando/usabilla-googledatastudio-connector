@@ -36,20 +36,20 @@ The fields from Usabilla API available on Google Data Studio can be defined on t
 
 Fields:
 
-Feedback ID
-Usabilla Feedback Button ID
-Usabilla Button Name
-Feedback Type 
-Campaign Name
-Campagign Analytics ID 
-Date
-Location
-URL
-Feedback Comment
-MoodScore
-NPS
-Custom Questions (1 to 10)
-Custom Answers (1 to 10)
-Custom Variables (1 to 5)
+* Feedback ID
+* Usabilla Feedback Button ID
+* Usabilla Button Name
+* Feedback Type 
+* Campaign Name
+* Campagign Analytics ID 
+* Date
+* Location
+* URL
+* Feedback Comment
+* MoodScore
+* NPS
+* Custom Questions (1 to 10)
+* Custom Answers (1 to 10)
+* Custom Variables (1 to 5)
 
 
