@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/vforlando/usabilla-googledatastudio-connector/branch/master/graph/badge.svg)](https://codecov.io/gh/vforlando/usabilla-googledatastudio-connector)
+
 # Usabilla - Google Data Studio - Connector
 
 ## Intro
