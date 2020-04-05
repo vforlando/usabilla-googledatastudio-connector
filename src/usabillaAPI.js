@@ -4,121 +4,129 @@
  * 
 */
 
-var usabillaAPI = (function () {
-    return {
-        getAuthHeader: function (apiKey, apiSecret, path, queryString) {
-            const hostname = "data.usabilla.com"
-            const sf = SignatureFactory
-            sf.init(apiKey, apiSecret, hostname);
-            sf.setUrl(path);
-            sf.setQueryParameters(queryString);
 
-            return { 'Authorization': sf.authHeader(), 'x-usbl-date': sf.dates.longdate }
-        },
-        getAllButtons: function (request) {
-            const params = request.configParams;
-            const endpoint = "https://data.usabilla.com/live/websites/button"
-            const path = '/live/websites/button'
-            const queryString = ''
-            const headers = this.getAuthHeader(params.api_key, params.api_secret, path, queryString)
+function UsabillaAPI(googleServices) {
+    this.googleServices = googleServices
+    return this;
+}
 
-            return this.callUsabillaApi(endpoint + '?' + queryString, headers)
-        },
-        getAllCampaigns: function (request) {
-            const params = request.configParams;
-            const endpoint = "https://data.usabilla.com/live/websites/campaign"
-            const path = '/live/websites/campaign'
-            const queryString = ''
-            const headers = this.getAuthHeader(params.api_key, params.api_secret, path, queryString)
 
-            return this.callUsabillaApi(endpoint, headers)
-        },
+UsabillaAPI.prototype.getAuthHeader = function (apiKey, apiSecret, path, queryString) {
 
-        getAllFeedbackItems: function (request) {
+    const hostname = "data.usabilla.com"
+    const sf = SignatureFactory
+    sf.init(apiKey, apiSecret, hostname, this.googleServices);
+    sf.setUrl(path);
+    sf.setQueryParameters(queryString);
 
-            const path = '/live/websites/button/*/feedback'
-            const endpoint = "https://data.usabilla.com/live/websites/button/*/feedback";
+    return { 'Authorization': sf.authHeader(), 'x-usbl-date': sf.dates.longdate }
+}
 
-            return this.callUsabillaApiWithPagination(request, path, endpoint);
-        },
+UsabillaAPI.prototype.getAllButtons = function (request) {
+    const params = request.configParams;
+    const endpoint = "https://data.usabilla.com/live/websites/button"
+    const path = '/live/websites/button'
+    const queryString = ''
+    const headers = this.getAuthHeader(params.api_key, params.api_secret, path, queryString)
 
-        getAllCampaignsResponses: function (request) {
+    return this.callUsabillaApi(endpoint + '?' + queryString, headers)
+}
 
-            const path = '/live/websites/campaign/*/results'
-            const endpoint = "https://data.usabilla.com/live/websites/campaign/*/results"
 
-            return this.callUsabillaApiWithPagination(request, path, endpoint);
-        },
+UsabillaAPI.prototype.getAllCampaigns = function (request) {
+    const params = request.configParams;
+    const endpoint = "https://data.usabilla.com/live/websites/campaign"
+    const path = '/live/websites/campaign'
+    const queryString = ''
+    const headers = this.getAuthHeader(params.api_key, params.api_secret, path, queryString)
 
-        callUsabillaApi: function (endpoint, headers) {
+    return this.callUsabillaApi(endpoint, headers)
+}
 
-            const params = {
-                headers: headers,
-                muteHttpExceptions: true
-            }
+UsabillaAPI.prototype.getAllFeedbackItems = function (request) {
 
-            // Synchronous 
-            const response = UrlFetchApp.fetch(endpoint, params);
-            const json_response = JSON.parse(response);
-            Logger.log('Call API: ' + endpoint + " " + json_response.items.length);
+    const path = '/live/websites/button/*/feedback'
+    const endpoint = "https://data.usabilla.com/live/websites/button/*/feedback";
 
-            return json_response
-        },
+    return this.callUsabillaApiWithPagination(request, path, endpoint);
+}
 
-        callUsabillaApiWithPagination: function (request, path, endpoint) {
 
-            const startDate = new Date(request.dateRange.startDate).getTime();
-            const endDate = new Date(request.dateRange.endDate).getTime();
+UsabillaAPI.prototype.getAllCampaignsResponses = function (request) {
 
-            const response = { items: [] }
+    const path = '/live/websites/campaign/*/results'
+    const endpoint = "https://data.usabilla.com/live/websites/campaign/*/results"
 
-            do {
-                const queryString = 'since=' + startDate;
-                const headers = this.getAuthHeader(request.configParams.api_key, request.configParams.api_secret, path, queryString);
-                const ub_response = this.callUsabillaApi(endpoint + '?' + queryString, headers);
+    return this.callUsabillaApiWithPagination(request, path, endpoint);
+}
 
-                // Check if there is more items (pages)
-                if (ub_response.hasMore == true) {
-                    // Update startDate to be used in the next request
-                    startDate = ub_response.lastTimestamp;
-                } else {
-                    hasMore = false;
-                }
 
-                // Check if response contains items with a date > than endDate
-                if (startDate >= endDate) {
-                    hasMore = false;
-                }
+UsabillaAPI.prototype.callUsabillaApi = function (endpoint, headers) {
 
-                const fb_items = ub_response.items;
+    const params = {
+        headers: headers,
+        muteHttpExceptions: true
+    }
 
-                for (let i = 0; i < fb_items.length; i++) {
-                    // Check if item date is inside the desired interval
-                    if (new Date(fb_items[i].date).getTime() < endDate)
-                        response.items.push(fb_items[i])
-                }
+    // Synchronous 
+    const response = this.googleServices.UrlFetchApp.fetch(endpoint, params);
+    const json_response = JSON.parse(response);
+    Logger.log('Call API: ' + endpoint + " " + json_response.items.length);
 
-            } while (hasMore !== false)
+    return json_response
+}
 
-            return response
+UsabillaAPI.prototype.callUsabillaApiWithPagination = function (request, path, endpoint) {
 
+    const startDate = new Date(request.dateRange.startDate).getTime();
+    const endDate = new Date(request.dateRange.endDate).getTime();
+
+    const response = { items: [] }
+
+    do {
+        const queryString = 'since=' + startDate;
+        const headers = this.getAuthHeader(request.configParams.api_key, request.configParams.api_secret, path, queryString);
+        const ub_response = this.callUsabillaApi(endpoint + '?' + queryString, headers);
+
+        // Check if there is more items (pages)
+        if (ub_response.hasMore == true) {
+            // Update startDate to be used in the next request
+            startDate = ub_response.lastTimestamp;
+        } else {
+            hasMore = false;
         }
 
+        // Check if response contains items with a date > than endDate
+        if (startDate >= endDate) {
+            hasMore = false;
+        }
 
-    }
-})()
+        const fb_items = ub_response.items;
+
+        for (let i = 0; i < fb_items.length; i++) {
+            // Check if item date is inside the desired interval
+            if (new Date(fb_items[i].date).getTime() < endDate)
+                response.items.push(fb_items[i])
+        }
+
+    } while (hasMore !== false)
+
+    return response
+
+}
 
 
-var CryptoJS = loadCrypto();
+const CryptoJS = loadCrypto();
 
-var SignatureFactory = (function () {
+const SignatureFactory = (function () {
     return {
-        init: function (accessKey, secretKey, host) {
+        init: function (accessKey, secretKey, host, googleServices) {
             this.accessKey = accessKey;
             this.secretKey = secretKey;
             this.host = host;
             this.method = 'GET';
             this.headers = {};
+            this.googleServices = googleServices
         },
         setUrl: function (url) {
             // mandatory
@@ -200,7 +208,7 @@ var SignatureFactory = (function () {
         },
         getSignature: function () {
             //const kDate = SignatureFactory.hmac('USBL1' + this.secretKey, this.dates.shortdate);
-            const kDate = Utilities.computeHmacSha256Signature(this.dates.shortdate, 'USBL1' + this.secretKey);
+            const kDate = this.googleServices.Utilities.computeHmacSha256Signature(this.dates.shortdate, 'USBL1' + this.secretKey);
             const kSigning = SignatureFactory.hmac(kDate, 'usbl1_request');
             const final = SignatureFactory.hmac(kSigning, this.stringToSign());
             var opa = final.map(function (e) {
@@ -224,7 +232,7 @@ var SignatureFactory = (function () {
         },
         hmac: function (key, string) {
             //return CryptoJS.SHA256.HMAC( string, key);
-            return Utilities.computeHmacSha256Signature(Utilities.newBlob(string).getBytes(), key);
+            return this.googleServices.Utilities.computeHmacSha256Signature(this.googleServices.Utilities.newBlob(string).getBytes(), key);
         },
         hash: function (string) {
             return CryptoJS.SHA256(string);
@@ -278,4 +286,9 @@ function loadCrypto() {
     // end sha256/CryptoJS
 
     return window.Crypto;
+}
+
+
+if (typeof(exports) !== 'undefined') {
+    module.exports = UsabillaAPI
 }

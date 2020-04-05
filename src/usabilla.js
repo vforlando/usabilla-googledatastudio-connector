@@ -2,8 +2,23 @@
  *  This script adapts the Usabilla API responses to be used in Google Data Studio
  */
 
-const getDataFromUsabilla = function (request, fields) {
+// Google Script will ignore this 
+/* istanbul ignore next */
+if (typeof(require) !== 'undefined') {
+    var UsabillaAPI = require('../test/mock/UsabillaAPI')
+    var DataModel = require('./DataModel')
+}
 
+
+
+function Usabilla(googleServices) {
+    this.googleServices = googleServices
+    return this;
+}
+
+Usabilla.prototype.getDataFromUsabilla = function (request) {
+
+    const usabillaAPI = new UsabillaAPI(this.googleServices)
     const response = []
 
     // Google Scripts HTTP Requests are synchronous function (no callback or promisses needed)
@@ -14,51 +29,17 @@ const getDataFromUsabilla = function (request, fields) {
     const ub_reponses = usabillaAPI.getAllCampaignsResponses(request);
 
     // Data Transformation
-    apiReponseToUniqueFeedback('fb', ub_feedbacks.items, ub_buttons.items, ub_campaigns.items).map(function (item) { response.push(item) });
-    apiReponseToUniqueFeedback('cp', ub_reponses.items, ub_buttons.items, ub_campaigns.items).map(function (item) { response.push(item) });
+    this.apiReponseToUniqueFeedback('fb', ub_feedbacks.items, ub_buttons.items, ub_campaigns.items).map(function (item) { response.push(item) });
+    this.apiReponseToUniqueFeedback('cp', ub_reponses.items, ub_buttons.items, ub_campaigns.items).map(function (item) { response.push(item) });
 
     return response;
+
 }
 
+Usabilla.prototype.mappingFields = function (type, usabilla_item, buttons, campaigns) {
 
-function lookUpField(r, k) {
-    if (k.length === 0) { return r }
-    if (r === undefined || r == null) { return undefined }
-    r = r[k[0]];
-    k.splice(0, 1);
-    return lookUpField(r, k)
-}
-
-function getButtonById(id, buttons) {
-    for (let i = 0; i < buttons.length; i++) {
-        if (id === buttons[i].id)
-            return buttons[i]
-    }
-    return {}
-}
-
-function getCampaignById(id, cp) {
-    for (let i = 0; i < cp.length; i++) {
-        if (id === cp[i].id)
-            return cp[i]
-    }
-    return {}
-}
-
-function apiReponseToUniqueFeedback(type, response, buttons, campaigns) {
-    const rows = []
-    for (let i = 0; i < response.length; i++) {
-        const usabilla_item = response[i];
-        let row = mappingFields(type, usabilla_item, buttons, campaigns)
-        row = mappingCustomFields(type, usabilla_item, row)
-        rows.push(row)
-    }
-    return rows
-}
-
-function mappingFields(type, usabilla_item, buttons, campaigns) {
-
-    const uniqueFormat = getFeedbackTableMetadata()
+    const dataModel = new DataModel()
+    const uniqueFormat = dataModel.getFeedbackTableMetadata()
     const row = {};
 
     for (let i = 0; i < uniqueFormat.length; i++) {
@@ -81,7 +62,7 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
             if (fieldUniqueFormat.value_type === 'TEXT')
                 row[fieldUniqueFormat.name] = usabilla_item.date
             else
-                row[fieldUniqueFormat.name] = Utilities.formatDate(new Date(usabilla_item.date), "CET", "yyyyMMdd");
+                row[fieldUniqueFormat.name] = this.googleServices.Utilities.formatDate(new Date(usabilla_item.date), "CET", "yyyyMMdd");
             continue;
         }
 
@@ -105,18 +86,18 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
         if (api_field.indexOf('r_') !== -1) {
 
             if (type === 'cp') {
-                usabilla_item.cp = getCampaignById(usabilla_item.campaignId, campaigns)
-                usabilla_item.cp.button = getButtonById(usabilla_item.cp.buttonId, buttons)
+                usabilla_item.cp = this.getCampaignById(usabilla_item.campaignId, campaigns)
+                usabilla_item.cp.button = this.getButtonById(usabilla_item.cp.buttonId, buttons)
 
             }
 
             if (type === 'fb') {
-                usabilla_item.button = getButtonById(usabilla_item.buttonId, buttons)
+                usabilla_item.button = this.getButtonById(usabilla_item.buttonId, buttons)
 
             }
             // keys should be an array with the object path. Ex: ['cp', 'button', 'name']
             const keys = api_field.replace('r_', '').split('.');
-            row[fieldUniqueFormat.name] = lookUpField(usabilla_item, keys);
+            row[fieldUniqueFormat.name] = this.lookUpField(usabilla_item, keys);
             continue;
         }
 
@@ -130,10 +111,23 @@ function mappingFields(type, usabilla_item, buttons, campaigns) {
     }
 
     return row
+
 }
 
 
-function mappingCustomFields(type, usabilla_item, row) {
+Usabilla.prototype.apiReponseToUniqueFeedback = function (type, response, buttons, campaigns) {
+    const rows = []
+    for (let i = 0; i < response.length; i++) {
+        const usabilla_item = response[i];
+        let row = this.mappingFields(type, usabilla_item, buttons, campaigns)
+        row = this.mappingCustomFields(type, usabilla_item, row)
+        rows.push(row)
+    }
+    return rows
+}
+
+
+Usabilla.prototype.mappingCustomFields = function (type, usabilla_item, row) {
 
     switch (type) {
         case 'cp':
@@ -178,6 +172,41 @@ function mappingCustomFields(type, usabilla_item, row) {
 
 }
 
-if (typeof(exports) !== 'undefined') {
-    module.exports.lookUpField = lookUpField;
+
+
+Usabilla.prototype.lookUpField = function (r, k) {
+    if (k.length === 0) { return r }
+    if (r === undefined || r == null) { return undefined }
+    r = r[k[0]];
+    k.splice(0, 1);
+    return this.lookUpField(r, k)
 }
+
+
+Usabilla.prototype.getButtonById = function (id, buttons) {
+    for (let i = 0; i < buttons.length; i++) {
+        if (id === buttons[i].id)
+            return buttons[i]
+    }
+    return {}
+}
+
+
+Usabilla.prototype.getCampaignById = function (id, cp) {
+    for (let i = 0; i < cp.length; i++) {
+        if (id === cp[i].id)
+            return cp[i]
+    }
+    return {}
+}
+
+/* istanbul ignore next */
+if (typeof (exports) !== 'undefined') {
+    module.exports = Usabilla
+}
+
+
+
+
+
+

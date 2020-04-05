@@ -1,13 +1,14 @@
-
+/* istanbul ignore next */
 function isAdminUser() {
-    return true // Debbug only 
+    return true 
 }
 
+/* istanbul ignore next */
 function getAuthType() {
     return { type: 'NONE' }
 }
 
-
+/* istanbul ignore next */
 function getConfig(request) {
 
     const cc = DataStudioApp.createCommunityConnector();
@@ -35,7 +36,7 @@ function getConfig(request) {
     return config.build();
 }
 
-
+/* istanbul ignore next */
 function getFields(request) {
 
     const cc = DataStudioApp.createCommunityConnector();
@@ -43,7 +44,8 @@ function getFields(request) {
     const types = cc.FieldType;
     const aggregations = cc.AggregationType;
 
-    const table = getFeedbackTableMetadata();
+    const dataModel = new DataModel()
+    const table = dataModel.getFeedbackTableMetadata();
 
     table.map(function (fbField) {
         if (fbField.type === 'dimension') {
@@ -57,11 +59,13 @@ function getFields(request) {
     return fields;
 }
 
+/* istanbul ignore next */
 function getSchema(request) {
     const fields = getFields(request).build();
     return { schema: fields };
 }
 
+/* istanbul ignore next */
 function responseToRows(requestedFields, response, packageName) {
     // Transform parsed data and filter for requested fields  
 
@@ -74,19 +78,28 @@ function responseToRows(requestedFields, response, packageName) {
     });
 
 }
-
+/* istanbul ignore next */
 function getData(request) {
     const requestedFieldIds = request.fields.map(function (field) {
         return field.name;
     });
     const requestedFields = getFields().forIds(requestedFieldIds);
 
+    const usabilla = getUsabilla()
+    const parsedResponse = usabilla.getDataFromUsabilla(request)
 
-    const parsedResponse = getDataFromUsabilla(request, requestedFields)
     const rows = responseToRows(requestedFields, parsedResponse, request.configParams.data_type);
 
     return {
         schema: requestedFields.build(),
         rows: rows
     };
+}
+
+/* istanbul ignore next */
+function getUsabilla(){
+    return new Usabilla({
+        Utilities : Utilities,
+        UrlFetchApp: UrlFetchApp
+    })
 }
