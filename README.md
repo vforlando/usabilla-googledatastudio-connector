@@ -12,18 +12,18 @@ This connector does not copy the Usabilla data inside Google. The data is retrie
 
 ## How to use 
 
-For testing purpose, we have deployed a version of this connector, and it is ready to be used: 
+For testing purpose, there is a ready-to-use version of this connector deployed on Google:
 
 https://datastudio.google.com/datasources/create?connectorId=AKfycbwpOn7xZVvGVPswWvs9UUMgWqrLR--y_n01umbYwUMclMSMxz8nFUn_U8n-DVQKu7Fg
 
-Please note that the connector is still an experimental project, and it has not been submitted to be part of the Google Comunity Connector. Because of that, you will probably receive a security warning from Google when you try to use this not published connector.  
+Please note that the connector is still an experimental project, and it has not been submitted to be part of the Google Comunity Connectors. Because of that, you will probably receive a security warning from Google (you need to click on accept it) when you try to use this not published connector.  
 
 As a recommended alternative, you can create and deploy your own connector and have full control of the code that is executed:
 
-* Visit Google Apps Script (https://script.google.com/) to create a new project. 
+* Visit Google Apps Script (https://script.google.com/) to create a new project
 * Copy the files from the src folder inside your project
-* Deploy your connector. Inside the Google Apps Script, click on Publish -> Deploy from manifest 
-* Use the link provided to access your connector.
+* Deploy your connector. Inside the Google Apps Script: click on Publish -> Deploy from manifest 
+* You will see a link that you can use to access your connector
 
 (More information about Google Data Studio connector: https://developers.google.com/datastudio/connector)
 
