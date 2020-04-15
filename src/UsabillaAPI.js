@@ -78,23 +78,26 @@ UsabillaAPI.prototype.callUsabillaApi = function (endpoint, headers) {
 
 UsabillaAPI.prototype.callUsabillaApiWithPagination = function (request, path, endpoint) {
 
-    const startDate = new Date(request.dateRange.startDate).getTime();
-    const endDate = new Date(request.dateRange.endDate).getTime();
+    let startDate = new Date(request.dateRange.startDate).getTime();
+    let endDate = new Date(request.dateRange.endDate).getTime();
 
     const response = { items: [] }
+
+    let hasMore = false;
 
     do {
         const queryString = 'since=' + startDate;
         const headers = this.getAuthHeader(request.configParams.api_key, request.configParams.api_secret, path, queryString);
         const ub_response = this.callUsabillaApi(endpoint + '?' + queryString, headers);
 
+        hasMore = false
+
         // Check if there is more items (pages)
         if (ub_response.hasMore == true) {
             // Update startDate to be used in the next request
             startDate = ub_response.lastTimestamp;
-        } else {
-            hasMore = false;
-        }
+            hasMore = true
+        } 
 
         // Check if response contains items with a date > than endDate
         if (startDate >= endDate) {
