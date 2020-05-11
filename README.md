@@ -4,8 +4,9 @@
 
 ## Intro
 
-This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this is a experimental project is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios
-Any feedback is very welcome to help us to improve it. 
+This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this is a experimental project is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios.
+
+Any feedback is very welcome.
 
 The code was developed in JavaScript, following some specificities of the Google App scripts (https://www.google.com/script/start). The main point to note is that Google Scripts, by default, does not support modules to be loaded. In this way, this project is not using the Usabilla NodeJS library (https://github.com/usabilla/api-js-node).
 
