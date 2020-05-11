@@ -4,7 +4,8 @@
 
 ## Intro
 
-This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this project is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios, although any feedback is very welcome.
+This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this is a experimental project is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios
+Any feedback is very welcome to help us to improve it. 
 
 The code was developed in JavaScript, following some specificities of the Google App scripts (https://www.google.com/script/start). The main point to note is that Google Scripts, by default, does not support modules to be loaded. In this way, this project is not using the Usabilla NodeJS library (https://github.com/usabilla/api-js-node).
 
@@ -33,7 +34,7 @@ To configure the connector, in the first use, it will ask you to enter the Usabi
 
 ## Fields Available
 
-The fields from Usabilla API available on Google Data Studio can be defined on the dataModel.js file. There are 40 fields already configured, including 10 custom fields that can handle custom questions from surveys and feedback forms.
+The fields from Usabilla API available on Google Data Studio can be defined on the dataModel.js file. There are 40 fields already configured, including 10 custom fields that can handle custom questions / custom variables from surveys and feedback forms.
 
 Fields:
 
