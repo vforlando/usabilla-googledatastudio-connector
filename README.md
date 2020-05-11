@@ -4,7 +4,7 @@
 
 ## Intro
 
-This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this is a experimental project is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios.
+This project was created to be used as an example of how to use the Usabilla API (https://developer.usabilla.com) to retrieve your feedback data and use it inside the Google Data Studio reporting tool. Please note this is an experimental project, and this is not part of any official product. Therefore, there is no official support and no guarantee that it works in all scenarios.
 
 Any feedback is very welcome.
 
@@ -18,7 +18,7 @@ For testing purpose, there is a ready-to-use version of this connector deployed 
 
 https://datastudio.google.com/datasources/create?connectorId=AKfycbwpOn7xZVvGVPswWvs9UUMgWqrLR--y_n01umbYwUMclMSMxz8nFUn_U8n-DVQKu7Fg
 
-Please note that the connector is still an experimental project, and it has not been submitted to be part of the Google Comunity Connectors. Because of that, you will probably receive a security warning from Google (you need to click on accept it) when you try to use this not published connector.  
+Please note that the connector is still an experimental project, and it has not been submitted to be part of the Google Partner Connectors. Because of that, you will probably receive a security warning from Google (you need to click on accept it) when you try to use this not published connector.  
 
 As a recommended alternative, you can create and deploy your own connector and have full control of the code that is executed:
 
