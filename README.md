@@ -16,7 +16,7 @@ This connector does not copy the Usabilla data inside Google. The data is retrie
 
 For testing purpose, there is a ready-to-use version of this connector deployed on Google:
 
-https://datastudio.google.com/datasources/create?connectorId=AKfycbwpOn7xZVvGVPswWvs9UUMgWqrLR--y_n01umbYwUMclMSMxz8nFUn_U8n-DVQKu7Fg
+https://datastudio.google.com/u/0/datasources/create?connectorId=AKfycby4uTnOcA-OsggFHBYFI8GHn9c6UhMjSnkKgCq7S3Q
 
 Please note that the connector is still an experimental project, and it has not been submitted to be part of the Google Partner Connectors. Because of that, you will probably receive a security warning from Google (you need to click on accept it) when you try to use this not published connector.  
 
